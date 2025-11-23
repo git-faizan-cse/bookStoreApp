@@ -43,7 +43,7 @@ const Banner = () => {
             </div>
           </div>
           <button className="btn btn-soft btn-secondary mb-4 ">
-            Secondary
+            Get Started
           </button>
         </div>
         {/* this is right side image div */}

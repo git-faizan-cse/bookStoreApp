@@ -1,8 +1,12 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import Login from "./login";
+import { useAuth } from "../context/AuthProvider";
+import Logout from "./logout";
 
 const Navbar = () => {
+  const [authUser, setAuthUser] = useAuth();
+
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
   );
@@ -99,7 +103,6 @@ const Navbar = () => {
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1">{navItems}</ul>
           </div>
-
           {/* div for the input search bar */}
           <div className="hidden md:block  dark:bg-slate-900 dark:text-white">
             <label className="input outline-none px-3 py-2 border rounded-md flex items-center gap-2  dark:bg-slate-900 dark:text-white">
@@ -122,9 +125,7 @@ const Navbar = () => {
               <input type="search" required placeholder="Search" />
             </label>
           </div>
-
           {/* for theme controller this is theme controller */}
-
           <div>
             <label className="swap swap-rotate">
               {/* this hidden checkbox controls the state */}
@@ -155,17 +156,22 @@ const Navbar = () => {
               </svg>
             </label>
           </div>
-
           {/* login button  */}
-          <div className="">
-            <a
-              className="bg-black text-white px-3 py-2 rounded-md hover:bg-slate-800 duration-300 cursor-pointer  dark:bg-amber-50 dark:text-black"
-              onClick={() => document.getElementById("my_modal_3").showModal()}
-            >
-              Login
-            </a>
-            <Login />
-          </div>
+          {authUser ? (
+            <Logout />
+          ) : (
+            <div className="">
+              <a
+                className="bg-black text-white px-3 py-2 rounded-md hover:bg-slate-800 duration-300 cursor-pointer  dark:bg-amber-50 dark:text-black"
+                onClick={() =>
+                  document.getElementById("my_modal_3").showModal()
+                }
+              >
+                Login
+              </a>
+              <Login />
+            </div>
+          )}
         </div>
       </div>
     </div>

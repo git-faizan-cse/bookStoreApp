@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const {
@@ -10,8 +12,42 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data); // `data` is a plain object with your form fields
+  const onSubmit = async (data) => {
+    const userInfo = {
+      email: data.email,
+      password: data.password,
+    };
+
+    await axios
+      .post("http://localhost:3000/user/login", userInfo)
+      .then((response) => {
+        console.log(response.data);
+        // Handle successful registration (e.g., show a success message, redirect, etc.)
+        if (response.status === 200) {
+          setTimeout(() => {
+            toast.success("Login successful!");
+          }, 500);
+          // toast.success("Login successful!");
+          const modal = document.getElementById("my_modal_3");
+          if (modal) {
+            modal.close();
+          } else {
+            console.warn("Modal element not found");
+          }
+          // alert("Login successful!");
+          // window.location.href = "/";
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      })
+      .catch((error) => {
+        console.error("There was an error in logging in the user!", error);
+        // Handle registration error (e.g., show an error message)
+        toast.error("Login failed! \n" + error.response.data.message);
+        // alert("Login failed! " + error.response.data.message);
+      });
   };
 
   return (

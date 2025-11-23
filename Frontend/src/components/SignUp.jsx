@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Login from "./login";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
   const {
@@ -11,8 +13,31 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data); // `data` is a plain object with your form fields
+  const onSubmit = async (data) => {
+    const userInfo = {
+      fullname: data.fullname,
+      email: data.email,
+      password: data.password,
+    };
+
+    await axios
+      .post("http://localhost:3000/user/signup", userInfo)
+      .then((response) => {
+        console.log(response.data);
+        // Handle successful registration (e.g., show a success message, redirect, etc.)
+        if (response.status === 201) {
+          // alert("Registration successful! Please log in.");
+          toast.success("Registration successful! Please log in.");
+          // window.location.href = "/";
+        }
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      })
+      .catch((error) => {
+        console.error("There was an error registering the user!", error);
+        // Handle registration error (e.g., show an error message)
+        // alert("Registration failed! " + error.response.data.message);
+        toast.error("Registration failed! \n" + error.response.data.message);
+      });
   };
 
   return (
@@ -42,7 +67,7 @@ const SignUp = () => {
                   type="text"
                   required
                   placeholder="Enter your Full Name"
-                  {...register("name", { required: true })}
+                  {...register("fullname", { required: true })}
                 />
               </div>
               {/* Email */}
